@@ -1,36 +1,25 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                git branch: 'master', url: 'http://127.0.0.1:3000/claris0911/SSD_TestVer1.git'
+                git branch: 'main', url: 'https://github.com/claris0911/SSD_Lab.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71' // Replace 'your-credentials-id' with the actual ID from Jenkins
             }
         }
         stage('Build') {
             steps {
-                sh 'docker-compose build'
+                sh 'docker build -t my-webapp .'
             }
         }
         stage('Run Tests') {
             steps {
-                // Assuming you have tests to run
-                // Add commands to run your tests here
+                sh 'docker run --rm my-webapp pytest tests/'
             }
         }
-        stage('Dependency Check') {
+        stage('Deploy') {
             steps {
-                // Add dependency check steps here
+                sh 'docker-compose up -d'
             }
-        }
-        stage('UI Testing') {
-            steps {
-                // Add UI testing steps here
-            }
-        }
-    }
-    post {
-        always {
-            // Add post-build steps here
         }
     }
 }
