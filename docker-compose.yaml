@@ -49,7 +49,7 @@ services:
       - jenkins
 
 networks:
-  webnet:
+  jenkins:
 
 volumes:
   jenkins-data:
