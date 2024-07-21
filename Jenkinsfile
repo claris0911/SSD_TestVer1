@@ -21,9 +21,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=SSDPrac -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_dc1991fa3554c4b9feac069b36e60953ab10118a"
+                        sh '/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube/bin/sonar-scanner ' +
+                           '-Dsonar.projectKey=SSDPrac ' +
+                           '-Dsonar.sources=. ' +
+                           '-Dsonar.host.url=http://192.168.1.131:9000 ' +
+                           '-Dsonar.login=sqp_dc1991fa3554c4b9feac069b36e60953ab10118a'
                     }
                 }
             }
