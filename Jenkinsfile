@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout SCM!') {
+        stage('Checkout SCM!!') {
             steps {
                 git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71'
             }
@@ -16,7 +16,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=squ_e70ce54a0a29054227354cdf9ea6d77d737b2305"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_b6b49db1d1da4857facfcafc233ce6f48d631f8f"
                     }
                 }
             }
