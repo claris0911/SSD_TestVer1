@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/claris0911/SSD_Lab.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71' // Replace 'your-credentials-id' with the actual ID from Jenkins
+                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71'
             }
         }
         stage('Build') {
@@ -16,10 +16,25 @@ pipeline {
                 sh 'docker run --rm my-webapp pytest tests/'
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=my-webapp -Dsonar.sources=. -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=<your-sonarqube-token>"
+                    }
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 sh 'docker-compose up -d'
             }
+        }
+    }
+    post {
+        always {
+            recordIssues enabledForFailure: true, tool: sonarQube()
         }
     }
 }
