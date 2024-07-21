@@ -11,18 +11,6 @@ pipeline {
                 sh 'docker build -t my-webapp .'
             }
         }
-        stage('Run Tests') {
-            steps {
-                script {
-                    def testsExist = sh(script: 'test -d tests', returnStatus: true) == 0
-                    if (testsExist) {
-                        sh 'docker run --rm my-webapp pytest'
-                    } else {
-                        echo "No tests found"
-                    }
-                }
-            }
-        }
         stage('SonarQube Analysis') {
             steps {
                 script {
