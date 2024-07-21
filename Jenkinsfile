@@ -3,18 +3,38 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71' // Replace 'your-credentials-id' with the actual ID from Jenkins
+                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git', credentialsId: '8ecd7d43-cbab-4a10-9ee8-1c31ad258a71'
             }
         }
-        stage('OWASP DependencyCheck') {
+        stage('Build') {
             steps {
-                dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                sh 'docker build -t my-webapp .'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh 'docker run --rm my-webapp pytest tests/'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.token=sqp_c31a3bbee3d4e9cf9bea4d08de8ce3b57143f5a9"
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
     }
     post {
-        success {
-            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        always {
+            recordIssues(enabledForFailure: true, tool: sonarQube())
         }
     }
 }

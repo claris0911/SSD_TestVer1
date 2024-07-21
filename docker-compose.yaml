@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - webnet
+
+  git-server:
+    image: gitea/gitea:latest
+    container_name: git-server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./repos:/data/git
+    networks:
+      - webnet
+
+  webapp:
+    build: .
+    container_name: webapp
+    ports:
+      - "5000:5000"
+    networks:
+      - webnet
+
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  jenkins-data:
