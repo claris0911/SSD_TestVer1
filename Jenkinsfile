@@ -14,7 +14,7 @@ pipeline {
         stage('Wait for SonarQube') {
             steps {
                 script {
-                    sleep(time: 60, unit: 'SECONDS')
+                    sleep(time: 30, unit: 'SECONDS')
                 }
             }
         }
