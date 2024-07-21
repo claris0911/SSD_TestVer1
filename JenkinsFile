@@ -21,7 +21,11 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQubeScanner'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=my-webapp -Dsonar.sources=. -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=<your-sonarqube-token>"
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=ssd_ver1 \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://127.0.0.1:9000 \
+                            -Dsonar.token=sqp_0c3811652bd2c25f9158dc9d69d8b9d32afc6148"
                     }
                 }
             }
@@ -34,7 +38,7 @@ pipeline {
     }
     post {
         always {
-            recordIssues enabledForFailure: true, tool: sonarQube()
+            recordIssues(enabledForFailure: true, tool: sonarQube())
         }
     }
 }
