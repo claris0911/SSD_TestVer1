@@ -24,7 +24,7 @@ services:
     image: gitea/gitea:latest
     container_name: git-server
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ./repos:/data/git
     networks:
