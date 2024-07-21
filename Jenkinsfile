@@ -23,7 +23,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube/bin/sonar-scanner -Dsonar.projectKey=SSDPrac -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_7fbaba389640a60a847c45b8cd7d357a5246fd23"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=SSDPrac -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_7fbaba389640a60a847c45b8cd7d357a5246fd23"
                     }
                 }
             }
