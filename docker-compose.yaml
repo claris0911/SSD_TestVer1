@@ -6,7 +6,7 @@ services:
     ports:
       - "80:80"
     networks:
-      - webnet
+      - jenkins
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -18,7 +18,7 @@ services:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - webnet
+      - jenkins
 
   git-server:
     image: gitea/gitea:latest
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./repos:/data/git
     networks:
-      - webnet
+      - jenkins
 
   webapp:
     build: .
@@ -36,7 +36,7 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - webnet
+      - jenkins
 
   sonarqube:
     image: sonarqube:latest
@@ -46,7 +46,7 @@ services:
     ports:
       - "9000:9000"
     networks:
-      - webnet
+      - jenkins
 
 networks:
   webnet:
