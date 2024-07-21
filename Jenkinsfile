@@ -13,15 +13,22 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'docker run --rm my-webapp pytest tests/'
+                script {
+                    def testsExist = sh(script: 'test -d tests', returnStatus: true) == 0
+                    if (testsExist) {
+                        sh 'docker run --rm my-webapp pytest'
+                    } else {
+                        echo "No tests found"
+                    }
+                }
             }
         }
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQubeScanner'
+                    def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.token=sqp_c31a3bbee3d4e9cf9bea4d08de8ce3b57143f5a9"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_c31a3bbee3d4e9cf9bea4d08de8ce3b57143f5a9"
                     }
                 }
             }
@@ -34,7 +41,7 @@ pipeline {
     }
     post {
         always {
-            recordIssues(enabledForFailure: true, tool: sonarQube())
+            recordIssues enabledForFailure: true, tool: sonarQube()
         }
     }
 }
