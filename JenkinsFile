@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'http://127.0.0.1:3000/claris0911/SSD_TestVer1.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                // Assuming you have tests to run
+                // Add commands to run your tests here
+            }
+        }
+        stage('Dependency Check') {
+            steps {
+                // Add dependency check steps here
+            }
+        }
+        stage('UI Testing') {
+            steps {
+                // Add UI testing steps here
+            }
+        }
+    }
+    post {
+        always {
+            // Add post-build steps here
+        }
+    }
+}

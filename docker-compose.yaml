@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+    networks:
+      - webnet
+
+  git-server:
+    image: gitea/gitea:latest
+    container_name: git-server
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./repos:/data/git
+    environment:
+      USERNAME: "claris0911"
+      EMAIL: "claristoh0911@gmail.com"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  jenkins-data:
