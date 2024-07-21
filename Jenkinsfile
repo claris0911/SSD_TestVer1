@@ -11,12 +11,19 @@ pipeline {
                 sh 'docker build -t my-webapp .'
             }
         }
+        stage('Wait for SonarQube') {
+            steps {
+                script {
+                    sleep(time: 60, unit: 'SECONDS')
+                }
+            }
+        }
         stage('SonarQube Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_b6b49db1d1da4857facfcafc233ce6f48d631f8f"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://sonarqube:9000 -Dsonar.token=sqp_b6b49db1d1da4857facfcafc233ce6f48d631f8f"
                     }
                 }
             }
