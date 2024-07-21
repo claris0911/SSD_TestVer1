@@ -3,7 +3,7 @@ import re
 
 app = Flask(__name__)
 
-# Define a pattern to detect XSS attacks (basic approach)
+# Define a pattern to detect XSS attacks 
 def is_xss_attack(input_str):
     xss_patterns = [r"<.*?>", r".*<.*>.*"]
     for pattern in xss_patterns:
@@ -11,7 +11,7 @@ def is_xss_attack(input_str):
             return True
     return False
 
-# Define a pattern to detect SQL injection attacks (basic approach)
+# Define a pattern to detect SQL injection attacks
 def is_sql_injection(input_str):
     sql_patterns = ["' OR '1'='1", "--", ";--", ";", "/*", "*/", "@@", "@", 
                     "char", "nchar", "varchar", "nvarchar", "alter", "begin", 
