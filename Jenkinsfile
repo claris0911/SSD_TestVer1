@@ -16,12 +16,17 @@ pipeline {
                 sh 'docker run --rm my-webapp pytest tests/'
             }
         }
-        stage('SonarQube Analysis') {
+        stage('Code Quality Check via SonarQube') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube';
+                    def scannerHome = tool 'SonarQubeScanner'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_c31a3bbee3d4e9cf9bea4d08de8ce3b57143f5a9"
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=OWASP \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://192.168.1.131:9000 \
+                            -Dsonar.token=sqp_c31a3bbee3d4e9cf9bea4d08de8ce3b57143f5a9"
+                    }
                 }
             }
         }
@@ -33,7 +38,7 @@ pipeline {
     }
     post {
         always {
-            recordIssues(enabledForFailure: true, tool: sonarQube())
+            recordIssues enabledForFailure: true, tool: sonarQube()
         }
     }
 }
