@@ -26,7 +26,9 @@ pipeline {
                            '-Dsonar.projectKey=SSDPrac ' +
                            '-Dsonar.sources=. ' +
                            '-Dsonar.host.url=http://192.168.1.131:9000 ' +
-                           '-Dsonar.login=sqp_dc1991fa3554c4b9feac069b36e60953ab10118a'
+                           '-Dsonar.login=sqp_dc1991fa3554c4b9feac069b36e60953ab10118a'+
+                           '-Dsonar.nodejs.executable=/usr/bin/node ' +
+                           '-Dsonar.exclusions=**/*.html'
                     }
                 }
             }
