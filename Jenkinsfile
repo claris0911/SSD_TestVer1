@@ -16,7 +16,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=sqp_8d5704d45d9489f4d37cb231ca5462b6d0603726"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ssd_ver1 -Dsonar.sources=. -Dsonar.host.url=http://192.168.1.131:9000 -Dsonar.token=squ_e70ce54a0a29054227354cdf9ea6d77d737b2305"
                     }
                 }
             }
