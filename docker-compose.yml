@@ -12,9 +12,10 @@ services:
 
   jenkins:
     image: jenkins/jenkins:lts
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375
     volumes:
       - jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -29,7 +30,7 @@ services:
       - "9000:9000"
     networks:
       - jenkins
-      
+
   sonarscanner:
     image: sonarsource/sonar-scanner-cli:latest
     networks:
