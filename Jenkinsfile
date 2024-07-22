@@ -1,20 +1,38 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git' // Replace 'your-credentials-id' with the actual ID from Jenkins
+                git 'https://github.com/claris0911/SSD_TestVer1.git'
             }
         }
-        stage('OWASP DependencyCheck') {
+        stage('Build Docker Image') {
             steps {
-                dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                sh 'docker-compose build'
+            }
+        }
+        stage('Start Services') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    sonar-scanner \
+                      -Dsonar.projectKey=SSDPrac \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=http://192.168.1.131:9000 \
+                      -Dsonar.login=sqp_d1aacc40f66adac1533f9d042d3e0cb361636379
+                    '''
+                }
             }
         }
     }
     post {
-        success {
-            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        always {
+            sh 'docker-compose down'
         }
     }
 }
