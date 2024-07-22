@@ -49,11 +49,20 @@ pipeline {
                 }
             }
         }
+        stage('Install SonarQube Scanner') {
+            steps {
+                sh '''
+                    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+                    unzip sonar-scanner-cli-4.6.2.2472-linux.zip
+                    export PATH=$PATH:$(pwd)/sonar-scanner-4.6.2.2472-linux/bin
+                '''
+            }
+        }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh """
-                        sonar-scanner \
+                        ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner \
                         -Dsonar.projectKey=SSD_TestVer1 \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://127.0.0.1:9000 \
