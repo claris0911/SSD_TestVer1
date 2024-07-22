@@ -31,14 +31,19 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove any existing container using port 5000
-                    def existingContainerId = sh(script: "docker ps -q -f ancestor=web-app", returnStdout: true).trim()
+                    // Stop and remove any existing container using port 5001
+                    def existingContainerId = sh(script: "docker ps -q --filter 'ancestor=web-app'", returnStdout: true).trim()
                     if (existingContainerId) {
                         sh "docker stop ${existingContainerId}"
                         sh "docker rm ${existingContainerId}"
                     }
-
-                    // Start a new container on a different port to avoid conflicts
+                    // Stop and remove any container using port 5001
+                    def existingPortContainerId = sh(script: "docker ps -q --filter 'publish=5001'", returnStdout: true).trim()
+                    if (existingPortContainerId) {
+                        sh "docker stop ${existingPortContainerId}"
+                        sh "docker rm ${existingPortContainerId}"
+                    }
+                    // Start a new container on port 5001 to avoid conflicts
                     sh "docker run -d -p 5001:5000 web-app"
                     sleep 10 // wait for the container to start
                 }
