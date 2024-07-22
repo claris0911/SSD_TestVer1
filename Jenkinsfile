@@ -33,14 +33,18 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                        sonar-scanner \
-                        -Dsonar.projectKey=SSD_TestVer1 \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://127.0.0.1:9000 \
-                        -Dsonar.login=${SONARQUBE_TOKEN}
-                    """
+                script {
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside {
+                        withSonarQubeEnv('SonarQube') {
+                            sh """
+                                sonar-scanner \
+                                -Dsonar.projectKey=SSD_TestVer1 \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http://127.0.0.1:9000 \
+                                -Dsonar.login=${SONARQUBE_TOKEN}
+                            """
+                        }
+                    }
                 }
             }
         }
