@@ -24,7 +24,7 @@ pipeline {
                       -Dsonar.projectKey=SSDPrac \
                       -Dsonar.sources=. \
                       -Dsonar.host.url=http://192.168.1.131:9000 \
-                      -Dsonar.login=sqp_d1aacc40f66adac1533f9d042d3e0cb361636379
+                      -Dsonar.login=sqp_7f6b61eee86d461af49270cf67c765ad1db31ca5
                     '''
                 }
             }
