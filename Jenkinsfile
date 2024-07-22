@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Install Java') {
             steps {
-                sh 'apk add openjdk11'  // Ensure Java is installed
+                sh 'apk --no-cache --allow-untrusted add openjdk11'  // Ensure Java is installed with root privileges
             }
         }
         stage('OWASP DependencyCheck') {
