@@ -1,47 +1,20 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout SCM!!!') {
+        stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'
+                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'// Replace 'your-credentials-id' with the actual ID from Jenkins
             }
         }
-        stage('Build') {
+        stage('OWASP DependencyCheck') {
             steps {
-                sh 'docker build -t my-webapp .'
-            }
-        }
-        stage('Wait for SonarQube') {
-            steps {
-                script {
-                    sleep(time: 20, unit: 'SECONDS')
-                }
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh '/var/jenkins_home/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube/bin/sonar-scanner ' +
-                           '-Dsonar.projectKey=SSDPrac ' +
-                           '-Dsonar.sources=. ' +
-                           '-Dsonar.host.url=http://192.168.1.131:9000 ' +
-                           '-Dsonar.login=sqp_dc1991fa3554c4b9feac069b36e60953ab10118a'+
-                           '-Dsonar.nodejs.executable=/usr/bin/node ' +
-                           '-Dsonar.exclusions=**/*.html'
-                    }
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
+                dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
             }
         }
     }
     post {
-        always {
-            recordIssues enabledForFailure: true, tool: sonarQube()
+        success {
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
         }
     }
 }
