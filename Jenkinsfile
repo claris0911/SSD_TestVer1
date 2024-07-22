@@ -3,6 +3,7 @@ pipeline {
     
     environment {
         SONARQUBE_TOKEN = credentials('SSDPracToken')
+        SONARQUBE_SCANNER = tool name: 'sonar-scanner'
     }
 
     stages {
@@ -40,17 +41,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    docker.image('sonarsource/sonar-scanner-cli:latest').inside("--network jenkins") {
-                        withSonarQubeEnv('SonarQube') {
-                            sh """
-                                sonar-scanner \
-                                -Dsonar.projectKey=SSD_TestVer1 \
-                                -Dsonar.sources=. \
-                                -Dsonar.host.url=http://192.168.1.131:9000 \
-                                -Dsonar.login=${SONARQUBE_TOKEN}
-                            """
-                        }
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${SONARQUBE_SCANNER}/bin/sonar-scanner \
+                            -Dsonar.projectKey=SSD_TestVer1 \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://192.168.1.131:9000 \
+                            -Dsonar.login=${SONARQUBE_TOKEN}
+                        """
                     }
+                    
                 }
             }
         }
