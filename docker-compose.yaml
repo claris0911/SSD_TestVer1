@@ -6,7 +6,7 @@ services:
     ports:
       - "80:80"
     networks:
-      - jenkins
+      - ssd_testver1_jenkins
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -18,7 +18,7 @@ services:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - jenkins
+      - ssd_testver1_jenkins
 
   git-server:
     image: gitea/gitea:latest
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./repos:/data/git
     networks:
-      - jenkins
+      - ssd_testver1_jenkins
 
   webapp:
     build: .
@@ -36,7 +36,7 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - jenkins
+      - ssd_testver1_jenkins
 
   sonarqube:
     image: sonarqube:latest
@@ -51,10 +51,10 @@ services:
     ports:
       - "9000:9000"
     networks:
-      - jenkins
+      - ssd_testver1_jenkins
 
 networks:
-  jenkins:
+  ssd_testver1_jenkins:
 
 volumes:
   jenkins-data:
