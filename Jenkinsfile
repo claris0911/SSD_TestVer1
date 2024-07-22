@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'sonarsource/sonar-scanner-cli:latest'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     
     environment {
         SONARQUBE_TOKEN = credentials('SSDPracToken')
@@ -9,15 +14,6 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'
-            }
-        }
-        stage('Install SonarQube Scanner') {
-            steps {
-                sh '''
-                    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-                    unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-                    export PATH=$PATH:$(pwd)/sonar-scanner-4.6.2.2472-linux/bin
-                '''
             }
         }
         stage('OWASP DependencyCheck') {
@@ -52,7 +48,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh """
-                        ./sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner \
+                        sonar-scanner \
                         -Dsonar.projectKey=SSD_TestVer1 \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://127.0.0.1:9000 \
