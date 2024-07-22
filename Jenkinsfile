@@ -8,12 +8,19 @@ pipeline {
     
     environment {
         SONARQUBE_TOKEN = credentials('SSDPracToken')
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk'  // Set JAVA_HOME for OWASP DependencyCheck
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
         stage('Checkout SCM') {
             steps {
                 git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'
+            }
+        }
+        stage('Install Java') {
+            steps {
+                sh 'apk add openjdk11'  // Ensure Java is installed
             }
         }
         stage('OWASP DependencyCheck') {
