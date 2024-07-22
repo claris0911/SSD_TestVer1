@@ -12,6 +12,7 @@ services:
 
   jenkins:
     image: jenkins/jenkins:lts
+    user: root
     environment:
       - DOCKER_HOST=tcp://host.docker.internal:2375
     volumes:
