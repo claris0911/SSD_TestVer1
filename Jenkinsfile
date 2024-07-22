@@ -14,11 +14,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'
             }
         }
-        // stage('OWASP DependencyCheck') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-        //     }
-        // }
+        stage('OWASP DependencyCheck') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -42,30 +42,30 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script {
-        //             docker.image('sonarsource/sonar-scanner-cli:latest').inside("--network jenkins") {
-        //                 withSonarQubeEnv('SonarQube') {
-        //                     sh """
-        //                         sonar-scanner \
-        //                         -Dsonar.projectKey=SSD_TestVer1 \
-        //                         -Dsonar.sources=. \
-        //                         -Dsonar.host.url=http://sonarqube:9000 \
-        //                         -Dsonar.login=${SONARQUBE_TOKEN}
-        //                     """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside("--network jenkins") {
+                        withSonarQubeEnv('SonarQube') {
+                            sh """
+                                sonar-scanner \
+                                -Dsonar.projectKey=SSD_TestVer1 \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http://192.168.1.131:9000 \
+                                -Dsonar.login=${SONARQUBE_TOKEN}
+                            """
+                        }
+                    }
+                }
+            }
+        }
     }
-    // post {
-    //     success {
-    //         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-    //     }
-    //     always {
-    //         junit 'tests/*.xml'
-    //     }
-    // }
+    post {
+        success {
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        }
+        always {
+            junit 'tests/*.xml'
+        }
+    }
 }
