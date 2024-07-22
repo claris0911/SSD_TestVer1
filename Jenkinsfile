@@ -34,7 +34,7 @@ pipeline {
         stage('Start SonarQube') {
             steps {
                 script {
-                    sh 'docker-compose up -d sonarqube'
+                    sh '/usr/local/bin/docker-compose up -d sonarqube'
                     sleep 60 // wait for SonarQube to start
                 }
             }
