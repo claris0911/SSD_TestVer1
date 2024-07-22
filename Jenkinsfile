@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/claris0911/SSD_Lab.git'
+                git branch: 'main', url: 'https://github.com/claris0911/SSD_TestVer1.git'
             }
         }
         stage('Build Docker Image') {
