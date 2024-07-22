@@ -29,6 +29,11 @@ services:
       - "9000:9000"
     networks:
       - jenkins
+      
+  sonarscanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    networks:
+      - jenkins
 
   nginx:
     image: nginx:alpine

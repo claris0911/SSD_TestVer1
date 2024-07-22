@@ -26,21 +26,29 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image('web-app').run('-d -p 5002:5000')
+                    docker.image('web-app').run('-d -p 5001:5000')
                     sleep 10 // wait for the container to start
+                }
+            }
+        }
+        stage('Start SonarQube') {
+            steps {
+                script {
+                    sh 'docker-compose up -d sonarqube'
+                    sleep 60 // wait for SonarQube to start
                 }
             }
         }
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    docker.image('sonarsource/sonar-scanner-cli:latest').inside {
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside("--network jenkins") {
                         withSonarQubeEnv('SonarQube') {
                             sh """
                                 sonar-scanner \
                                 -Dsonar.projectKey=SSD_TestVer1 \
                                 -Dsonar.sources=. \
-                                -Dsonar.host.url=http://127.0.0.1:9000 \
+                                -Dsonar.host.url=http://sonarqube:9000 \
                                 -Dsonar.login=${SONARQUBE_TOKEN}
                             """
                         }
@@ -52,6 +60,9 @@ pipeline {
     post {
         success {
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        }
+        always {
+            junit 'tests/*.xml'
         }
     }
 }
