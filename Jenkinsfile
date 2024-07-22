@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'sonarsource/sonar-scanner-cli:latest'
+            image 'docker:19.03.12'  // Use a Docker image with DinD support
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
