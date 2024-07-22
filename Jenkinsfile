@@ -26,7 +26,12 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image('web-app').run('-d -p 5000:5000')
+                    def containerId = sh(script: "docker ps -q -f ancestor=web-app", returnStdout: true).trim()
+                    if (containerId) {
+                        sh "docker stop ${containerId}"
+                        sh "docker rm ${containerId}"
+                    }
+                    sh "docker run -d -p 5000:5000 web-app"
                     sleep 10 // wait for the container to start
                 }
             }
